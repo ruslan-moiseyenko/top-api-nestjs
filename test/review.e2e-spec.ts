@@ -12,7 +12,7 @@ const testDto: CreateReviewDto = {
 	name: 'Test',
 	title: 'Test Title',
 	description: 'Test Description',
-	rating: 0,
+	rating: 5,
 	productId,
 };
 
@@ -20,7 +20,7 @@ describe('AppController (e2e)', () => {
 	let app: INestApplication;
 	let createdId: string;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
@@ -29,7 +29,7 @@ describe('AppController (e2e)', () => {
 		await app.init();
 	});
 
-	it('/review/create  (POST)', async () => {
+	it('/review/create  (POST) - success', async () => {
 		const { body } = await request(app.getHttpServer())
 			.post('/review/create')
 			.send(testDto)
@@ -37,6 +37,13 @@ describe('AppController (e2e)', () => {
 
 		createdId = body._id;
 		expect(createdId).toBeDefined();
+	});
+
+	it('/review/create  (POST) - fail', async () => {
+		await request(app.getHttpServer())
+			.post('/review/create')
+			.send({ ...testDto, rating: 6 })
+			.expect(400);
 	});
 
 	it('/review/byProduct/:productId (GET) - success', async () => {
@@ -55,14 +62,16 @@ describe('AppController (e2e)', () => {
 		expect(body.length).toBe(0);
 	});
 
-	it('/review/:id (DELETE) - success', () => {
-		return request(app.getHttpServer())
+	it('/review/:id (DELETE) - success', async () => {
+		expect(createdId).toBeDefined();
+
+		return await request(app.getHttpServer())
 			.delete('/review/' + createdId)
 			.expect(200);
 	});
 
-	it('/review/:id (DELETE) - fail', () => {
-		return request(app.getHttpServer())
+	it('/review/:id (DELETE) - fail', async () => {
+		return await request(app.getHttpServer())
 			.delete('/review/' + new Types.ObjectId().toHexString()) //fake productId
 			.expect(404, {
 				statusCode: 404,
