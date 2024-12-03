@@ -32,6 +32,7 @@ export class CreateProductDto {
 	@IsNumber()
 	oldPrice?: number;
 
+	@IsNumber()
 	credit: number;
 
 	@IsString()

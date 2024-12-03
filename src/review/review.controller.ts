@@ -12,7 +12,7 @@ import {
 	ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { UserEmail } from 'src/decorators/user-email.decorator';
+// import { UserEmail } from 'src/decorators/user-email.decorator';
 import { CreateReviewDto } from 'src/review/dto/create-review.dto';
 import { REVIEW_ERRORS } from 'src/review/review.constants';
 import { ReviewService } from 'src/review/review.service';
@@ -31,9 +31,8 @@ export class ReviewController {
 	@Get('byProduct/:productId')
 	async getByProduct(
 		@Param('productId') id: string,
-		@UserEmail() email: string,
+		// @UserEmail() email: string,
 	) {
-		console.log('🚀 ~ ReviewController ~ email:', email);
 		return this.reviewService.findByProductId(id);
 	}
 
