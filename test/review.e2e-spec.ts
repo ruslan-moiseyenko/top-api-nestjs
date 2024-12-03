@@ -5,6 +5,7 @@ import { AppModule } from '../src/app.module';
 import { CreateReviewDto } from 'src/review/dto/create-review.dto';
 import { Types, disconnect } from 'mongoose';
 import { REVIEW_ERRORS } from 'src/review/review.constants';
+import { AuthDto } from 'src/auth/dto/auth.dto';
 
 const productId = new Types.ObjectId().toHexString();
 
@@ -12,13 +13,19 @@ const testDto: CreateReviewDto = {
 	name: 'Test',
 	title: 'Test Title',
 	description: 'Test Description',
-	rating: 5,
+	rating: 4,
 	productId,
+};
+
+const loginDto: AuthDto = {
+	login: 'rus1@gmail.com',
+	password: 'pas',
 };
 
 describe('AppController (e2e)', () => {
 	let app: INestApplication;
 	let createdId: string;
+	let token: string;
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -27,6 +34,14 @@ describe('AppController (e2e)', () => {
 
 		app = moduleFixture.createNestApplication();
 		await app.init();
+	});
+
+	beforeEach(async () => {
+		const { body } = await request(app.getHttpServer())
+			.post('/auth/login')
+			.send(loginDto);
+
+		token = body.access_token;
 	});
 
 	it('/review/create  (POST) - success', async () => {
@@ -40,17 +55,16 @@ describe('AppController (e2e)', () => {
 	});
 
 	it('/review/create  (POST) - fail', async () => {
-		const { body } = await request(app.getHttpServer())
+		await request(app.getHttpServer())
 			.post('/review/create')
 			.send({ ...testDto, rating: 0 })
 			.expect(400);
-
-		console.log('🚀 ~ it ~ body:', body);
 	});
 
 	it('/review/byProduct/:productId (GET) - success', async () => {
 		const { body } = await request(app.getHttpServer())
 			.get('/review/byProduct/' + productId)
+			.set('Authorization', 'Bearer ' + token) //added authorization
 			.expect(200);
 
 		expect(body.length).toBe(1);
@@ -59,6 +73,7 @@ describe('AppController (e2e)', () => {
 	it('/review/byProduct/:productId (GET) - fail', async () => {
 		const { body } = await request(app.getHttpServer())
 			.get('/review/byProduct/' + new Types.ObjectId().toHexString()) //fake productId
+			.set('Authorization', 'Bearer ' + token)
 			.expect(200);
 
 		expect(body.length).toBe(0);
