@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
 
-//class validates and transform string to  ObjectId
+//class validates ObjectId type
 @Injectable()
 export class IdValidationPipe implements PipeTransform {
 	transform(value: string, metadata: ArgumentMetadata) {
