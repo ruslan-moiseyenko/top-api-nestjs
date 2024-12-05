@@ -1,10 +1,23 @@
-version: '3'
-service:
-  top.api: top-api-backend:1.0
-  container_name: top-api-backend
-  restart: unless-stopped
-  ports:
-    - 3000:3000
-  volumes:
-    - ./env:/opt/app/.env
-    
+services:
+  top-api: 
+    build: . 
+    container_name: top-api-backend
+    restart: unless-stopped
+    ports:   
+      - "3000:3000" 
+    volumes:
+      - ./.env:/opt/app/.env 
+    environment:
+      - MONGODB_URI=mongodb://${MONGO_LOGIN}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_AUTHDATABASE}
+    networks:
+      - docker-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    networks:
+      - docker-network
+
+networks:
+  docker-network:
+    driver: bridge
