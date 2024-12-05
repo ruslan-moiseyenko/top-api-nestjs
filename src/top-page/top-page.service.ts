@@ -44,10 +44,26 @@ export class TopPageService {
 
 	async findByCategory(firstCategory: TopLevelCategory) {
 		return this.topPageModel
-			.find(
-				{ firstLevelCategories: firstCategory },
-				{ alias: 1, secondLevelCategories: 1, title: 1 },
-			)
+			.aggregate()
+			.match({ firstLevelCategories: firstCategory })
+			.group({
+				_id: { secondLevelCategories: '$secondLevelCategories' },
+				pages: { $push: { alias: '$alias', title: '$pageTitle' } },
+			})
 			.exec();
+		// example of pipelines
+		// .aggregate([
+		// 	{
+		// 		$match: {
+		// 			firstLevelCategories: firstCategory,
+		// 		},
+		// 	},
+		// 	{
+		// 		$group: {
+		// 			_id: { secondLevelCategories: '$secondLevelCategories' },
+		// 			pages: { $push: { alias: '$alias', title: '$pageTitle' } },
+		// 		},
+		// 	},
+		// ])
 	}
 }
