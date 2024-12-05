@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import { prop } from '@typegoose/typegoose';
+import { index, prop } from '@typegoose/typegoose';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 
 export enum TopLevelCategory {
@@ -33,6 +33,10 @@ export class TopPageAdvantage {
 }
 
 export interface TopPageModel extends Base {}
+
+@index({
+	'$**': 'text', //text search on all fields
+})
 export class TopPageModel extends TimeStamps {
 	@prop({ enum: TopLevelCategory })
 	firstLevelCategories: TopLevelCategory;

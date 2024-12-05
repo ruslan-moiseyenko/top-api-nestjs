@@ -26,6 +26,12 @@ export class TopPageService {
 		return await this.topPageModel.findOne({ alias }).exec();
 	}
 
+	async findByText(text: string) {
+		return await this.topPageModel
+			.find({ $text: { $search: text, $caseSensitive: false } })
+			.exec();
+	}
+
 	async deleteById(id: string) {
 		return this.topPageModel.findByIdAndDelete({ _id: id }).exec();
 	}
