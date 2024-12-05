@@ -28,12 +28,12 @@ export class ReviewController {
 		return this.reviewService.create(dto);
 	}
 
-	@UseGuards(JwtAuthGuard) //check if user is authorized
 	@Get('byProduct/:productId')
 	async getByProduct(@Param('productId', IdValidationPipe) id: string) {
 		return this.reviewService.findByProductId(id);
 	}
 
+	@UseGuards(JwtAuthGuard) //check if user is authorized
 	@Delete(':id')
 	async delete(@Param('id', IdValidationPipe) id: string) {
 		const deletedDoc = await this.reviewService.delete(id);
