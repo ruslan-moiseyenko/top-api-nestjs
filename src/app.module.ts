@@ -8,6 +8,7 @@ import { ReviewModule } from './review/review.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { GetMongoConfig } from 'src/config/mongo.config';
+import { FilesModule } from './files/files.module';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { GetMongoConfig } from 'src/config/mongo.config';
 		TopPageModule,
 		ProductModule,
 		ReviewModule,
+		FilesModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
