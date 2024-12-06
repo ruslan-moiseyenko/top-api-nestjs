@@ -15,4 +15,5 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag ruslanmoiseyenko/top-api-nestjs:latest
       - name: Push to DockerHub
-        run: docker push ruslanmoiseyenko/top-api-nestjs
+        run: docker login -u ruslanmoiseyenko -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          && docker push ruslanmoiseyenko/top-api-nestjs
