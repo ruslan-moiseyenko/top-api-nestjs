@@ -26,6 +26,10 @@ export class TopPageService {
 		return await this.topPageModel.findOne({ alias }).exec();
 	}
 
+	async findAll() {
+		return await this.topPageModel.find({}).exec();
+	}
+
 	async findByText(text: string) {
 		return await this.topPageModel
 			.find({ $text: { $search: text, $caseSensitive: false } })
